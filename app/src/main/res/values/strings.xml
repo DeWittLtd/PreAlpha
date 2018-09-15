@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PreAlpha</string>
+    <string name="notice">*Notice: Allowing 10% deviation to right and left</string>
+    <string name="cur_beam">Current beaming:</string>
+    <string name="req_beam">Required beaming:</string>
+    <string name="distance">Distance:</string>
+    <string name="cur_loc">Current Location:</string>
+    <string name="saved_loc">Saved Location:</string>
+</resources>
