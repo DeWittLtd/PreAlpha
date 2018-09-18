@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
@@ -29,9 +30,11 @@ import butterknife.OnClick;
 import ltd.vblago.prealpha.R;
 import ltd.vblago.prealpha.model.Compass;
 import ltd.vblago.prealpha.model.Point;
+import ltd.vblago.prealpha.network.TCPConnection;
+import ltd.vblago.prealpha.network.TCPConnectionListener;
 import ltd.vblago.prealpha.util.CalcTool;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TCPConnectionListener {
 
     @BindView(R.id.savedLocation)
     TextView savedLocationTv;
@@ -57,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private LocationManager locationManager;
     private LocationListener listener;
+
+    private TCPConnection connection; // connection to server
+    private final String SERVER_IP = "192.168.31.142"; // ip address of the server
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
         setupLocation();
         isVibrate = false;
         vibrator = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
+
+        try {
+            connection = new TCPConnection(this, SERVER_IP, PORT);
+            connection.sendString("connected");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupCompass() {
@@ -205,5 +218,32 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d(TAG, "stop compass");
         compass.stop();
+    }
+
+
+    // server stuff
+
+
+    @Override
+    public void onConnectionReady(TCPConnection tcpConnection) {
+        // when device connected
+    }
+
+    @Override
+    public void onReceiveString(TCPConnection tcpConnection, String value) {
+        // when you get string (in out case location and other data)
+        // theoretically you need do smth like that
+        // savedPoint = data from value
+        // but you know better than me
+    }
+
+    @Override
+    public void onDisconnect(TCPConnection tcpConnection) {
+        //obviously disconnected
+    }
+
+    @Override
+    public void onException(TCPConnection tcpConnection, Exception ex) {
+        // we fucked!
     }
 }
